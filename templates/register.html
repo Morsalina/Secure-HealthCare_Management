@@ -54,7 +54,7 @@
                         name="first_name"
                         placeholder="Enter your first name"
                         autocomplete="name"
-                        required
+                        value = "{{ first_name or ''}}" required
                     >
                     <small class="field-error">
                         {{ errors.get('first_name', '') }}
@@ -71,7 +71,7 @@
                         name="last_name"
                         placeholder="Enter your last name"
                         autocomplete="name"
-                        required
+                        value = "{{ last_name or ''}}" required
                     >
 
                     <small class="field-error">
@@ -89,7 +89,7 @@
                         name="email"
                         placeholder="Enter your email"
                         autocomplete="email"
-                        required
+                        value = "{{ email or ''}}" required
                     >
 
                     <small class="field-error">
@@ -106,7 +106,7 @@
                         id="dob"
                         name="dob"
                         autocomplete="bday"
-                        required
+                        value = "{{ dob or ''}}" required
                     >
 
                     <small class="field-error">

@@ -9,9 +9,32 @@ app = Flask(__name__)
 def welcomePage():
     return render_template('index.html')
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template('login.html')
+    if request.method == 'POST':
+        email = request.form.get('email', '').strip()
+        password = request.form.get('password', '').strip()
+
+        errors={}
+
+        if not email:
+            errors['email'] = 'Required'
+        else:
+            email_pattern = r'^[^@\s]+@[^@\s]+\.[^@\s]+$'
+            if not re.match(email_pattern, email):
+                errors['email'] = 'Invalid email address'
+
+        if not password:
+            errors['password'] = 'Required'
+
+        if errors:
+            return render_template(
+                'login.html',
+                errors=errors,
+                email=email,
+            )
+
+    return render_template('login.html', errors={})
 
 @app.route('/register', methods=['GET', 'POST'])
 def registerPage():
