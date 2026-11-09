@@ -1,0 +1,233 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SecureCare Admin Panel</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin: 25px 0;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+        }
+
+        .tabs a {
+            padding: 10px 18px;
+            text-decoration: none;
+            color: #333;
+            background: #eee;
+            border-radius: 5px;
+        }
+
+        .tabs a.active {
+            background: #2457a7;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #eee;
+        }
+
+        .logout {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>SecureCare Admin Panel</h1>
+
+    <p>Welcome, {{ user['first_name'] }}!</p>
+
+    <div class="tabs">
+
+        <a href="{{ url_for('admin_dashboard', tab='patients') }}"
+           class="{{ 'active' if selected_tab == 'patients' else '' }}">
+            Patients
+        </a>
+
+        <a href="{{ url_for('admin_dashboard', tab='care_workers') }}"
+           class="{{ 'active' if selected_tab == 'care_workers' else '' }}">
+            Care Workers
+        </a>
+
+        <a href="{{ url_for('admin_dashboard', tab='assignments') }}"
+           class="{{ 'active' if selected_tab == 'assignments' else '' }}">
+            Assignments
+        </a>
+
+        <a href="{{ url_for('admin_dashboard', tab='users') }}"
+           class="{{ 'active' if selected_tab == 'users' else '' }}">
+            All Users
+        </a>
+
+    </div>
+
+
+    {% if selected_tab == 'patients' %}
+
+        <h2>Patient List</h2>
+
+        <table>
+            <tr>
+                <th>Patient ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Date of Birth</th>
+                <th>Phone</th>
+                <th>Status</th>
+            </tr>
+
+            {% for p in data %}
+            <tr>
+                <td>{{ p['patient_id'] }}</td>
+                <td>{{ p['first_name'] }} {{ p['last_name'] }}</td>
+                <td>{{ p['email'] }}</td>
+                <td>{{ p['date_of_birth'] }}</td>
+                <td>{{ p['phone'] or 'N/A' }}</td>
+                <td>{{ p['account_status'] }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6">No patients found.</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+
+    {% elif selected_tab == 'care_workers' %}
+
+        <h2>Care Worker List</h2>
+
+        <table>
+            <tr>
+                <th>Worker ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Employee ID</th>
+                <th>Qualification</th>
+                <th>Status</th>
+            </tr>
+
+            {% for w in data %}
+            <tr>
+                <td>{{ w['worker_id'] }}</td>
+                <td>{{ w['first_name'] }} {{ w['last_name'] }}</td>
+                <td>{{ w['email'] }}</td>
+                <td>{{ w['employee_id'] }}</td>
+                <td>{{ w['qualification'] or 'N/A' }}</td>
+                <td>{{ w['account_status'] }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6">No care workers found.</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+
+    {% elif selected_tab == 'assignments' %}
+
+        <h2>Care Worker Assignments</h2>
+
+        <table>
+            <tr>
+                <th>Assignment ID</th>
+                <th>Patient</th>
+                <th>Care Worker</th>
+                <th>Employee ID</th>
+                <th>Assigned At</th>
+                <th>Status</th>
+            </tr>
+
+            {% for a in data %}
+            <tr>
+                <td>{{ a['assignment_id'] }}</td>
+
+                <td>
+                    {{ a['patient_first_name'] }}
+                    {{ a['patient_last_name'] }}
+                </td>
+
+                <td>
+                    {{ a['worker_first_name'] }}
+                    {{ a['worker_last_name'] }}
+                </td>
+
+                <td>{{ a['employee_id'] }}</td>
+                <td>{{ a['assigned_at'] }}</td>
+                <td>{{ a['assignment_status'] }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6">No assignments found.</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+
+    {% elif selected_tab == 'users' %}
+
+        <h2>All User Accounts</h2>
+
+        <table>
+            <tr>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Account Status</th>
+                <th>Email Verified</th>
+            </tr>
+
+            {% for u in data %}
+            <tr>
+                <td>{{ u['user_id'] }}</td>
+                <td>{{ u['first_name'] }} {{ u['last_name'] }}</td>
+                <td>{{ u['email'] }}</td>
+                <td>{{ u['user_roles'] }}</td>
+                <td>{{ u['account_status'] }}</td>
+                <td>{{ 'Yes' if u['email_verified'] == 1 else 'No' }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6">No users found.</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    {% endif %}
+
+
+    <div class="logout">
+        <form action="{{ url_for('logout') }}" method="POST">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+
+</body>
+</html>
